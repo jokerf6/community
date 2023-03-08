@@ -4,6 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { loginDto } from './Dto/login.dto';
 import { changeDto } from './Dto/change.dto';
 import { DefaultDto } from './Dto/default.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 @ApiTags('auth')
