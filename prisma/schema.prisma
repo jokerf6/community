@@ -11,11 +11,14 @@ datasource db {
 }
 
 model user {
-  id       String @id @default(uuid())
-  number   String
-  password String
-  role     Role
-  Token    Token?
+  id        String   @id @default(uuid())
+  number    String
+  password  String
+  role      Role
+  Token     Token?
+  createdAt DateTime @default(now())
+  extend    DateTime @default(now())
+  active    Boolean  @default(true)
 }
 
 model Token {
