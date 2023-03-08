@@ -15,6 +15,20 @@ model user {
   number   String
   password String
   role     Role
+  Token    Token?
+}
+
+model Token {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   user   @relation(fields: [userId], references: [id])
+}
+
+model defaultPasswords {
+  id String @id @default(uuid())
+
+  rootPassword String
+  userPassword String
 }
 
 enum Role {
