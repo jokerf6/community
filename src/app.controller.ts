@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Res, Body } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
 import { passwordsDto } from './user/dto/passwords.dto';
 
 @Controller()
