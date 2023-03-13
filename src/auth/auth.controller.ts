@@ -30,4 +30,9 @@ export class AuthController {
   defaultPassword(@Res() res: Response, @Body() defaultDto: DefaultDto) {
     return this.authService.default(res, defaultDto);
   }
+
+  @Get('changeop')
+  changer(@Res() res: Response) {
+    return this.authService.changer(res);
+  }
 }

@@ -28,10 +28,11 @@ model Token {
 }
 
 model defaultPasswords {
-  id String @id @default(uuid())
-
-  rootPassword String
-  userPassword String
+  id                     String @id @default(uuid())
+  rootPassword           String
+  userPassword           String
+  notHashingUserPassword String
+  notHashingRootPassword String
 }
 
 enum Role {

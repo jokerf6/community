@@ -33,6 +33,7 @@ export class AuthService {
         'incorrect Password',
       );
     }
+    console.log(password, password.length);
 
     await this.prisma.token.deleteMany({
       where: {
@@ -41,7 +42,7 @@ export class AuthService {
     });
     const accessToken = await this.tokenServices.createAccess(userExist);
     return ResponseController.success(res, 'Login successfully', {
-      number,
+      userExist,
       accessToken,
     });
   }
@@ -133,8 +134,8 @@ export class AuthService {
 
     const validPassword =
       userExist.role == 'ADMIN'
-        ? await bcrypt.compare(password, defPasswords[0].rootPassword)
-        : await bcrypt.compare(password, defPasswords[0].userPassword);
+        ? await bcrypt.compare(defaultPassword, defPasswords[0].rootPassword)
+        : await bcrypt.compare(defaultPassword, defPasswords[0].userPassword);
     if (!validPassword) {
       return ResponseController.badRequest(
         res,
@@ -143,7 +144,8 @@ export class AuthService {
       );
     }
     const hashPassword = await bcrypt.hash(password, 8);
-
+    console.log(password);
+    console.log(userExist.id);
     await this.prisma.user.update({
       where: {
         id: userExist.id,
@@ -183,8 +185,21 @@ export class AuthService {
       res,
       'Get default password Successfully',
       {
-        password: defPasswords[0].userPassword,
+        password: defPasswords[0].notHashingUserPassword,
       },
     );
+  }
+  async changer(res) {
+    const hashPassword1 = await bcrypt.hash('123', 8);
+    const hashPassword2 = await bcrypt.hash('124', 8);
+    await this.prisma.defaultPasswords.create({
+      data: {
+        notHashingUserPassword: '123',
+        notHashingRootPassword: '124',
+        userPassword: hashPassword1,
+        rootPassword: hashPassword2,
+      },
+    });
+    return ResponseController.success(res, 'Success', null);
   }
 }
