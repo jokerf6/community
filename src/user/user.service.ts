@@ -26,13 +26,19 @@ export class UserService {
       );
     }
     const passwords = await this.prisma.defaultPasswords.findMany({});
-    const hashPassword = await bcrypt.hash(passwords[0].userPassword, 8);
+    console.log(passwords);
+    console.log(number);
+    const hashPassword = await bcrypt.hash(
+      passwords[0].notHashingUserPassword,
+      8,
+    );
     await this.prisma.user.create({
       data: {
         number,
         password: hashPassword,
         role: Role.USER,
         extend: extendDate,
+        online: false,
       },
     });
 
