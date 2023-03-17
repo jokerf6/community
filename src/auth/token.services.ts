@@ -15,7 +15,7 @@ export class tokenService {
     const accessToken = jwt.sign(
       { userId: user.id, id: tokenId.id, role: user.role },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: 90 * 24 * 60 * 60 },
+      { expiresIn: 100 * 24 * 60 * 60 },
     );
     return accessToken;
   }

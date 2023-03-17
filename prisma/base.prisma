@@ -11,37 +11,38 @@ datasource db {
 }
 
 model user {
-    id           String         @id @default(uuid())
-    number       String
-    password     String
-    role         Role
-    Token        Token?
-    createdAt    DateTime       @default(now())
-    extend       DateTime       @default(now())
-    active       Boolean        @default(true)
-    online       Boolean
-    message      messages[]
-    userMessages userMessages[]
+    id             String         @id @default(uuid())
+    number         String
+    password       String
+    role           Role
+    Token          Token?
+    createdAt      DateTime       @default(now())
+    extend         DateTime       @default(now())
+    active         Boolean        @default(true)
+    online         Boolean
+    unreadMessages Int            @default(0)
+    userMessages   userMessages[]
 }
 
 model messages {
     id           String         @id @default(uuid())
     type         messageType
     messageBody  String         @db.Text
-    user         user           @relation(fields: [userId], references: [id])
-    userId       String
-    userMessages userMessages[]
     createdAt    DateTime       @default(now()) @db.Timestamp(2)
+    userMessages userMessages[]
+    replay       messages[]     @relation("messageReplay")
+    replays      messages?      @relation("messageReplay", fields: [replayId], references: [id])
+    replayId     String?
 }
 
 model userMessages {
     id         String   @id @default(uuid())
     user       user     @relation(fields: [userId], references: [id])
     userId     String
+    read       Boolean
     messages   messages @relation(fields: [messagesId], references: [id])
     messagesId String
-    myMessages Boolean
-    read       Boolean
+    createdAt  DateTime @default(now()) @db.Timestamp(2)
 }
 
 model Token {

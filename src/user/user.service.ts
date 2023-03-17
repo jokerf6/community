@@ -95,10 +95,18 @@ export class UserService {
         extend: date,
       },
     });
+    return ResponseController.success(res, 'end session Successfully', null);
   }
-  async all(res) {
-    const users = await this.prisma.user.findMany({});
-    return ResponseController.success(res, 'Get users Successfully', users);
+  async all(res, query) {
+    const users = await this.prisma.user.findMany({
+      skip: (parseInt(query.skip) - 1) * parseInt(query.take || 15) || 0,
+      take: +query.take || 15,
+    });
+    const allUsers = await this.prisma.user.count({});
+    return ResponseController.success(res, 'Get users Successfully', {
+      users,
+      allUsers,
+    });
   }
 
   async makeAdmin(res, id) {
@@ -119,10 +127,10 @@ export class UserService {
         id,
       },
       data: {
-        role: Role.ADMIN,
+        role: userExist.role === Role.ADMIN ? Role.USER : Role.ADMIN,
       },
     });
-    await this.prisma.token.delete({
+    await this.prisma.token.deleteMany({
       where: {
         userId: id,
       },
