@@ -9,7 +9,7 @@ import {
 import { PrismaService } from './prisma.services';
 import { ChatService } from './chat/chat.service';
 
-@WebSocketGateway(9601, { cors: '*' })
+@WebSocketGateway(3001, { cors: '*' })
 export class chatGetway {
   constructor(
     private readonly prisma: PrismaService,
