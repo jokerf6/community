@@ -8,9 +8,10 @@ import { PrismaService } from './prisma.services';
 import { chatGetway } from './chat,getway';
 import { ChatModule } from './chat/chat.module';
 import { ChatService } from './chat/chat.service';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
-  imports: [AuthModule, UserModule, ChatModule],
+  imports: [AuthModule, UserModule, ChatModule, UploadModule],
   controllers: [AppController],
   providers: [AppService, PrismaService, chatGetway, ChatService],
 })

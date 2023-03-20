@@ -7,6 +7,7 @@ import {
   Body,
   UseGuards,
   Query,
+  Param,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -61,5 +62,10 @@ export class AppController {
     },
   ) {
     return this.appService.getMedia(res, query);
+  }
+  @Get('/api/v1/uploads/:id')
+  sendFile(@Res() res, @Param('id') id: string) {
+    console.log(id);
+    return this.appService.sendFile(res, id);
   }
 }

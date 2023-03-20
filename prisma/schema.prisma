@@ -28,6 +28,7 @@ model messages {
   id           String         @id @default(uuid())
   type         messageType
   messageBody  String         @db.Text
+  mediaUrl     String?        @db.Text
   createdAt    DateTime       @default(now()) @db.Timestamp(2)
   userMessages userMessages[]
   replay       messages[]     @relation("messageReplay")
@@ -68,4 +69,5 @@ enum messageType {
   TEXT
   VOICE
   MEDIA
+  DELETED
 }

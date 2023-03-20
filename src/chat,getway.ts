@@ -19,23 +19,30 @@ export class chatGetway {
   server;
   @SubscribeMessage('send_message')
   async handleMessage(@Req() req, @Res() res, @MessageBody() message: string) {
+    console.log(message);
     const valid = await this.prisma.user.findUnique({
-      where:{
-      id:  message['id'],
-      }
-    })
-    if(valid){
-    const mess = !message['replay']
-      ? await this.chat.addMessage(message['message'])
-      : await this.chat.addReplayMessage(
-          message['message'],
-          message['replayId'],
-        );
+      where: {
+        id: message['id'],
+      },
+    });
+    if (valid) {
+      const mess = !message['replay']
+        ? await this.chat.addMessage(
+            message['message'],
+            message['type'],
+            message['mediaUrl'],
+          )
+        : await this.chat.addReplayMessage(
+            message['message'],
+            message['replayId'],
+            message['type'],
+            message['mediaUrl'],
+          );
 
-    message['messageId'] = mess.id;
-    await this.chat.addUserMessages(message['id'], res, mess.id);
-    await this.server.emit('receive_message', message);
-  }
+      message['messageId'] = mess.id;
+      await this.chat.addUserMessages(message['id'], res, mess.id);
+      await this.server.emit('receive_message', message);
+    }
   }
   @SubscribeMessage('unreadReq')
   async handleunread(@MessageBody() message: string) {

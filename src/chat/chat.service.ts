@@ -28,7 +28,7 @@ export class ChatService {
 
     return ResponseController.success(res, 'Get data Successfully', messages);
   }
-  async addUserMessages(user, res, body) {
+  async addUserMessages(user: any, res: any, body: any) {
     const userExist = await this.prisma.user.findUnique({
       where: {
         id: user,
@@ -74,22 +74,25 @@ export class ChatService {
 
     // return ResponseController.success(res, 'add data Successfully', null);
   }
-  async addMessage(body) {
+  async addMessage(body: any, type, mediaUrl) {
+    console.log(body);
     const mess = await this.prisma.messages.create({
       data: {
-        type: messageType.TEXT,
+        type: type,
         messageBody: body,
+        mediaUrl: mediaUrl,
       },
     });
     return mess;
   }
 
-  async addReplayMessage(body, replayId) {
+  async addReplayMessage(body, replayId, type, mediaUrl) {
     const mess = await this.prisma.messages.create({
       data: {
-        type: messageType.TEXT,
+        type: type,
         messageBody: body,
         replayId: replayId,
+        mediaUrl: mediaUrl,
       },
     });
     return mess;
