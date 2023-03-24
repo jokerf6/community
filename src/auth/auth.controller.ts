@@ -13,6 +13,7 @@ import { loginDto } from './Dto/login.dto';
 import { changeDto } from './Dto/change.dto';
 import { DefaultDto } from './Dto/default.dto';
 import { Response } from 'express';
+import { Request } from 'express';
 
 import { AuthGuard } from '@nestjs/passport';
 
