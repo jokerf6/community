@@ -12,6 +12,7 @@ import { PrismaService } from './prisma.services';
 import { ChatService } from './chat/chat.service';
 import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
+import { messageType } from '@prisma/client';
 
 @WebSocketGateway(8080, { cors: '*' })
 export class chatGetway implements OnGatewayConnection, OnGatewayInit {
@@ -105,6 +106,19 @@ export class chatGetway implements OnGatewayConnection, OnGatewayInit {
       await this.chat.addUserMessages(message['id'], res, mess.id);
       await this.server.emit('receive_message', message);
     }
+  }
+  @SubscribeMessage('delete')
+  async delete(@MessageBody() messageId: string) {
+    console.log('mess ', messageId);
+    await this.prisma.messages.update({
+      where: {
+        id: messageId,
+      },
+      data: {
+        type: messageType.DELETED,
+      },
+    });
+    this.server.emit('message_delete', messageId);
   }
   @SubscribeMessage('unreadReq')
   async handleunread(@MessageBody() message: string) {
