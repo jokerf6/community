@@ -28,6 +28,18 @@ export class jwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         where: { id: payload.userId, active: true },
       });
       if (user) {
+        const date = new Date();
+        if (!user.active && user.role !== 'ADMIN' && user.extend > date) {
+          await this.prisma.user.update({
+            where: {
+              id: user.id,
+            },
+            data: {
+              active: false,
+            },
+          });
+          done(null, false);
+        }
         done(null, {
           userObject: { ...user },
           jti: payload.jti,

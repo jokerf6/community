@@ -99,7 +99,7 @@ export class UserService {
   }
   async all(res, query) {
     const users = await this.prisma.user.findMany({
-      skip: (parseInt(query.skip) - 1) * parseInt(query.take || 15) || 0,
+      skip: +query.skip || 0,
       take: +query.take || 15,
     });
     const allUsers = await this.prisma.user.count({});

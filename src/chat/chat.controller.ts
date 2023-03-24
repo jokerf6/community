@@ -14,7 +14,8 @@ import { Response, Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { changeDto } from 'src/auth/Dto/change.dto';
 import { chatData } from './dto/chatData.dto';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles, RolesGuard } from 'src/auth/guards/roles.guard';
+import { Role } from '@prisma/client';
 
 @Controller('chat')
 @ApiTags('chat')
@@ -31,12 +32,11 @@ export class ChatController {
     required: false,
   })
   @ApiBearerAuth('Access Token')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Get('/')
   getMessages(
     @Req() req: Request,
     @Res() res: Response,
-    @Body(ValidationPipe) chatData: chatData,
     @Query()
     query: {
       skip?: string;

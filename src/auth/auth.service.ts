@@ -13,7 +13,7 @@ export class AuthService {
   ) {}
   async signin(res, loginDto) {
     const { number, password } = loginDto;
-    console.log(number , password);
+    console.log(number, password);
     const userExist = await this.prisma.user.findFirst({
       where: {
         number,
@@ -202,5 +202,32 @@ export class AuthService {
       },
     });
     return ResponseController.success(res, 'Success', null);
+  }
+  async logout(req, res) {
+    await this.prisma.token.deleteMany({
+      where: {
+        userId: req.user.userObject.id,
+      },
+    });
+    await this.prisma.user.update({
+      where: {
+        id: req.user.userObject.id,
+      },
+      data: {
+        online: false,
+      },
+    });
+    return ResponseController.success(res, 'delete session successfully', null);
+  }
+  async changeStatus(req, res) {
+    await this.prisma.user.update({
+      where: {
+        id: req.user.userObject.id,
+      },
+      data: {
+        online: false,
+      },
+    });
+    return ResponseController.success(res, 'delete session successfully', null);
   }
 }

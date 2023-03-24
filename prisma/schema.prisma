@@ -22,6 +22,7 @@ model user {
   online         Boolean
   unreadMessages Int            @default(0)
   userMessages   userMessages[]
+  messages       messages[]
 }
 
 model messages {
@@ -31,9 +32,20 @@ model messages {
   mediaUrl     String?        @db.Text
   createdAt    DateTime       @default(now()) @db.Timestamp(2)
   userMessages userMessages[]
-  replay       messages[]     @relation("messageReplay")
-  replays      messages?      @relation("messageReplay", fields: [replayId], references: [id])
-  replayId     String?
+  message      replay[]       @relation("replayMessage")
+
+  replay replay[] @relation("originMessage")
+  user   user     @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model replay {
+  id         String       @id @default(uuid())
+  replayId   String
+  Replay     messages     @relation(name: "originMessage", fields: [replayId], references: [id])
+  messages   messages     @relation(name: "replayMessage", fields: [messagesId], references: [id])
+  messagesId String
+  replayType messageType?
 }
 
 model userMessages {

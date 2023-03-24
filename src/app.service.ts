@@ -34,13 +34,14 @@ export class AppService {
   }
   async getMedia(res, query) {
     const media = await this.prisma.messages.findMany({
-      skip: (parseInt(query.skip) - 1) * parseInt(query.take || 15) || 0,
+      skip: +query.skip || 0,
       take: +query.take || 15,
       where: {
         type: messageType.MEDIA,
       },
       select: {
         messageBody: true,
+        mediaUrl: true,
       },
     });
     const allMedia = await this.prisma.messages.count({

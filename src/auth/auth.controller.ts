@@ -1,10 +1,20 @@
-import { Controller, Get, Post, Res, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Res,
+  Body,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { loginDto } from './Dto/login.dto';
 import { changeDto } from './Dto/change.dto';
 import { DefaultDto } from './Dto/default.dto';
 import { Response } from 'express';
+
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -34,5 +44,17 @@ export class AuthController {
   @Get('changeop')
   changer(@Res() res: Response) {
     return this.authService.changer(res);
+  }
+  @ApiBearerAuth('Access Token')
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/logout')
+  logout(@Req() req: Request, @Res() res: Response) {
+    return this.authService.logout(req, res);
+  }
+  @ApiBearerAuth('Access Token')
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/changeStatus')
+  changeStatus(@Req() req: Request, @Res() res: Response) {
+    return this.authService.changeStatus(req, res);
   }
 }
