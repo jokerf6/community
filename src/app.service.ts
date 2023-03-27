@@ -78,8 +78,9 @@ export class AppService {
         notHashingUserPassword: true,
       },
     });
+
     const password = {
-      userPassord: passwords[0].notHashingRootPassword,
+      userPassord: passwords[0].notHashingUserPassword,
       rootPassord: passwords[0].notHashingRootPassword,
     };
     return ResponseController.success(

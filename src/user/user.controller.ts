@@ -8,6 +8,8 @@ import {
   Param,
   Query,
   UseGuards,
+  Patch,
+  ValidationPipe,
 } from '@nestjs/common';
 
 import { Response } from 'express';
@@ -29,7 +31,7 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   @Post('/add')
-  addUser(@Res() res: Response, @Body() addUser: addUser) {
+  addUser(@Res() res: Response, @Body(ValidationPipe) addUser: addUser) {
     return this.userService.addUser(res, addUser);
   }
   @ApiQuery({
@@ -59,7 +61,7 @@ export class UserController {
   @ApiBearerAuth('Access Token')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
-  @Post('/:id/extendDate')
+  @Patch('/:id/extendDate')
   extend(
     @Res() res: Response,
     @Body() extendDto: extendDto,

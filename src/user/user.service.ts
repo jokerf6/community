@@ -10,6 +10,7 @@ export class UserService {
 
   async addUser(res, addUser) {
     const { number, extendDate } = addUser;
+
     const userExist = await this.prisma.user.findFirst({
       where: {
         number,
@@ -18,7 +19,10 @@ export class UserService {
     if (userExist) {
       return ResponseController.conflict(res, 'user already exist');
     }
-    if (extendDate < Date.now()) {
+    console.log(extendDate);
+    console.log(Date.now());
+    const date = new Date(extendDate);
+    if (date < new Date()) {
       return ResponseController.badRequest(
         res,
         'date cannot be less than now',
@@ -32,7 +36,7 @@ export class UserService {
       passwords[0].notHashingUserPassword,
       8,
     );
-    await this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         number,
         password: hashPassword,
@@ -42,7 +46,7 @@ export class UserService {
       },
     });
 
-    return ResponseController.success(res, 'User Create Successfully');
+    return ResponseController.success(res, 'User Create Successfully', user);
   }
 
   async extend(res, id, extendDto) {
@@ -98,15 +102,21 @@ export class UserService {
     return ResponseController.success(res, 'end session Successfully', null);
   }
   async all(res, query) {
-    const users = await this.prisma.user.findMany({
-      skip: +query.skip || 0,
-      take: +query.take || 15,
-    });
-    const allUsers = await this.prisma.user.count({});
-    return ResponseController.success(res, 'Get users Successfully', {
-      users,
-      allUsers,
-    });
+    const users = await this.prisma.user.findMany({});
+    for (let i = 0; i < users.length; i += 1) {
+      if (users[i].extend < new Date() && users[i].role === 'USER') {
+        await this.prisma.user.update({
+          where: {
+            id: users[i].id,
+          },
+          data: {
+            active: false,
+          },
+        });
+        users[i]['active'] = false;
+      }
+    }
+    return ResponseController.success(res, 'Get users Successfully', { users });
   }
 
   async makeAdmin(res, id) {
