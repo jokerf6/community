@@ -12,6 +12,8 @@ export class tokenService {
         userId: user.id,
       },
     });
+    //e.log('tttttttttttttttttto');
+    //e.log(tokenId);
     const accessToken = jwt.sign(
       { userId: user.id, id: tokenId.id, role: user.role },
       process.env.ACCESS_TOKEN_SECRET,

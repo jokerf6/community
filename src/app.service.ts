@@ -89,4 +89,21 @@ export class AppService {
       password,
     );
   }
+  async downloadFile(res, id) {
+    console.log(id.split('uploads/')[0]);
+    console.log(__dirname);
+    const filePath = join(
+      __dirname,
+      '..',
+      `/uploads/${id.split('uploads/')[0]}`,
+    );
+
+    res.download(filePath, function (err) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log('Sent:', 'fileName');
+      }
+    });
+  }
 }

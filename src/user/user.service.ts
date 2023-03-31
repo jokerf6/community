@@ -63,8 +63,15 @@ export class UserService {
         'user not exist',
       );
     }
-    const date = new Date();
-
+    const date = new Date(extendDate);
+    if (date < new Date()) {
+      return ResponseController.badRequest(
+        res,
+        'date cannot be less than now',
+        'date cannot be less than now',
+      );
+    }
+    console.log(extendDate);
     await this.prisma.user.update({
       where: {
         id,

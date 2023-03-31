@@ -28,7 +28,7 @@ export class chatGetway implements OnGatewayConnection, OnGatewayInit {
     this.logger.log('Initialized');
   }
   handleConnection(client) {
-    console.log('Client connected: ' + client.id);
+    //e.log('Client connected: ' + client.id);
   }
 
   async handleDisconnect(client) {
@@ -36,7 +36,7 @@ export class chatGetway implements OnGatewayConnection, OnGatewayInit {
       .filter(({ 1: c }) => c === client.id)
       .map(([k]) => k)[0];
     this.clients.delete(userId);
-    console.log('Client disconnected: ' + client.id + ' ', userId);
+    //e.log('Client disconnected: ' + client.id + ' ', userId);
     if (userId) {
       await this.prisma.user.update({
         where: {
@@ -52,7 +52,7 @@ export class chatGetway implements OnGatewayConnection, OnGatewayInit {
   @SubscribeMessage('userOnline')
   async handleUserOnline(client, data) {
     this.clients.set(data, client.id);
-    console.log(client.id, data);
+    //e.log(client.id, data);
     await this.prisma.user.update({
       data: {
         online: true,
@@ -67,13 +67,13 @@ export class chatGetway implements OnGatewayConnection, OnGatewayInit {
         userId: data,
       },
     });
-    //  console.log('User ' + data + ' is online');
+    //  //e.log('User ' + data + ' is online');
     // update user status in data store
   }
 
   @SubscribeMessage('userOffline')
   async handleUserOffline(client, data) {
-    console.log('User ' + data + ' is offline');
+    //e.log('User ' + data + ' is offline');
     // update user status in data store
   }
   @WebSocketServer()
@@ -109,7 +109,7 @@ export class chatGetway implements OnGatewayConnection, OnGatewayInit {
   }
   @SubscribeMessage('delete')
   async delete(@MessageBody() messageId: string) {
-    console.log('mess ', messageId);
+    //e.log('mess ', messageId);
     await this.prisma.messages.update({
       where: {
         id: messageId,
@@ -145,7 +145,7 @@ export class chatGetway implements OnGatewayConnection, OnGatewayInit {
   }
   @SubscribeMessage('join')
   async connect(@MessageBody() userId) {
-    // console.log('lllllllllllllllllllllllllllllllllllllllllllllllllllll');
+    // //e.log('lllllllllllllllllllllllllllllllllllllllllllllllllllll');
 
     await this.prisma.user.update({
       data: {
@@ -165,7 +165,7 @@ export class chatGetway implements OnGatewayConnection, OnGatewayInit {
 
   @SubscribeMessage('logout')
   async disConnect(@MessageBody() userId: string) {
-    //   console.log(userId, 'disconnected');
+    //   //e.log(userId, 'disconnected');
 
     await this.prisma.user.update({
       data: {

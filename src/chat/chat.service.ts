@@ -117,6 +117,14 @@ export class ChatService {
         take: +query.take || 15,
         orderBy: { createdAt: 'desc' },
       });
+      const numberOfMessages = await this.prisma.messages.count({
+        where: {
+          createdAt: {
+            lte: userExist.extend,
+          },
+        },
+      });
+
       const AllMessage = [];
 
       for (let i = 0; i < messages.length; i++) {
@@ -156,11 +164,10 @@ export class ChatService {
       }
       AllMessage.reverse();
 
-      return ResponseController.success(
-        res,
-        'Get data Successfully',
+      return ResponseController.success(res, 'Get data Successfully', {
         AllMessage,
-      );
+        numberOfMessages,
+      });
     }
   }
   async addUserMessages(user: any, res: any, body: any) {
@@ -176,6 +183,30 @@ export class ChatService {
         'user donot exist',
       );
     }
+    const users1 = await this.prisma.user.findMany({
+      where: {
+        active: true,
+        online: true,
+        unreadMessages: {
+          gt: 0,
+        },
+      },
+    });
+    for (let i = 0; i < users1.length; i++) {
+      await this.prisma.user.update({
+        where: {
+          id: users1[i].id,
+        },
+        data: {
+          unreadMessages: 0,
+        },
+      });
+      await this.prisma.userMessages.deleteMany({
+        where: {
+          userId: users1[i].id,
+        },
+      });
+    }
     const users = await this.prisma.user.findMany({
       where: {
         active: true,
@@ -187,6 +218,7 @@ export class ChatService {
         unreadMessages: true,
       },
     });
+    console.log(users);
     for (let i = 0; i < users.length; i += 1) {
       if (userExist.id !== users[i].id) {
         await this.prisma.userMessages.create({

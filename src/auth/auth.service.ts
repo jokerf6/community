@@ -12,8 +12,9 @@ export class AuthService {
     private readonly tokenServices: tokenService,
   ) {}
   async signin(res, loginDto) {
+    console.log('enterrrrrrrrrrrrrrrrrrrr');
     const { number, password } = loginDto;
-    console.log(number, password);
+    //e.log(number, password);
     const userExist = await this.prisma.user.findFirst({
       where: {
         number,
@@ -34,7 +35,7 @@ export class AuthService {
         'incorrect Password',
       );
     }
-    console.log(password, password.length);
+    //e.log(password, password.length);
 
     await this.prisma.token.deleteMany({
       where: {
@@ -145,8 +146,8 @@ export class AuthService {
       );
     }
     const hashPassword = await bcrypt.hash(password, 8);
-    console.log(password);
-    console.log(userExist.id);
+    //e.log(password);
+    //e.log(userExist.id);
     await this.prisma.user.update({
       where: {
         id: userExist.id,

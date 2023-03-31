@@ -68,4 +68,8 @@ export class AppController {
     console.log(id);
     return this.appService.sendFile(res, id);
   }
+  @Get('/api/v1/downloads/uploads/:id')
+  downloadFile(@Res() res, @Param('id') id: string) {
+    return this.appService.downloadFile(res, id);
+  }
 }
