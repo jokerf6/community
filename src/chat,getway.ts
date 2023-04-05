@@ -14,7 +14,7 @@ import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { messageType } from '@prisma/client';
 
-@WebSocketGateway(80, { cors: '*' })
+@WebSocketGateway()
 export class chatGetway implements OnGatewayConnection, OnGatewayInit {
   constructor(
     private readonly prisma: PrismaService,
