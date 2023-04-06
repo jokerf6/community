@@ -75,11 +75,15 @@ model defaultPasswords {
 enum Role {
   USER
   ADMIN
+  PENDING
 }
 
 enum messageType {
   TEXT
   VOICE
   MEDIA
+  PNG
+  JPG
+  MP4
   DELETED
 }

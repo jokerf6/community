@@ -11,6 +11,28 @@ export class AuthService {
     private readonly prisma: PrismaService,
     private readonly tokenServices: tokenService,
   ) {}
+  async signup(res, addDto) {
+    const { number, extendDate } = addDto;
+    const userExist = await this.prisma.user.findFirst({
+      where: {
+        number,
+      },
+    });
+    if (userExist) {
+      return ResponseController.conflict(res, 'User Already Exist');
+    }
+    const passwords = await this.prisma.defaultPasswords.findMany({});
+    await this.prisma.user.create({
+      data: {
+        extend: extendDate,
+        number,
+        online: false,
+        role: 'PENDING',
+        password: passwords[0].userPassword,
+      },
+    });
+    return ResponseController.success(res, 'user Add Successfully', null);
+  }
   async signin(res, loginDto) {
     console.log('enterrrrrrrrrrrrrrrrrrrr');
     const { number, password } = loginDto;
@@ -23,18 +45,26 @@ export class AuthService {
     if (!userExist) {
       return ResponseController.badRequest(
         res,
-        'User Donot exist',
-        'User Donot exist',
+        'invalid username or password',
+        'invalid username or password',
+      );
+    }
+    if (userExist.role === 'PENDING') {
+      return ResponseController.badRequest(
+        res,
+        'Your Request is pending',
+        'Your Request is pending',
       );
     }
     const validPassword = await bcrypt.compare(password, userExist.password);
     if (!validPassword) {
       return ResponseController.badRequest(
         res,
-        'incorrect Password',
-        'incorrect Password',
+        'invalid username or password',
+        'invalid username or password',
       );
     }
+
     //e.log(password, password.length);
 
     await this.prisma.token.deleteMany({

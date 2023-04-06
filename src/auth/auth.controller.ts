@@ -6,6 +6,7 @@ import {
   Body,
   UseGuards,
   Req,
+  ValidationPipe,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -16,6 +17,7 @@ import { Response } from 'express';
 import { Request } from 'express';
 
 import { AuthGuard } from '@nestjs/passport';
+import { addDto } from './Dto/add.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -57,5 +59,10 @@ export class AuthController {
   @Get('/changeStatus')
   changeStatus(@Req() req: Request, @Res() res: Response) {
     return this.authService.changeStatus(req, res);
+  }
+
+  @Post('/signup')
+  signup(@Res() res: Response, @Body(ValidationPipe) addDto: addDto) {
+    return this.authService.signup(res, addDto);
   }
 }

@@ -14,7 +14,7 @@ import { Logger } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { messageType } from '@prisma/client';
 
-@WebSocketGateway()
+@WebSocketGateway(5000, { cors: '*' })
 export class chatGetway implements OnGatewayConnection, OnGatewayInit {
   constructor(
     private readonly prisma: PrismaService,
@@ -36,7 +36,8 @@ export class chatGetway implements OnGatewayConnection, OnGatewayInit {
       .filter(({ 1: c }) => c === client.id)
       .map(([k]) => k)[0];
     this.clients.delete(userId);
-    //e.log('Client disconnected: ' + client.id + ' ', userId);
+    console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+    console.log('Client disconnected: ' + client.id + ' ', userId);
     if (userId) {
       await this.prisma.user.update({
         where: {
@@ -52,21 +53,25 @@ export class chatGetway implements OnGatewayConnection, OnGatewayInit {
   @SubscribeMessage('userOnline')
   async handleUserOnline(client, data) {
     this.clients.set(data, client.id);
-    //e.log(client.id, data);
-    await this.prisma.user.update({
-      data: {
-        online: true,
-        unreadMessages: 0,
-      },
-      where: {
-        id: data,
-      },
-    });
-    await this.prisma.userMessages.deleteMany({
-      where: {
-        userId: data,
-      },
-    });
+    console.log('hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+
+    console.log(client.id, data);
+    if (data) {
+      await this.prisma.user.update({
+        data: {
+          online: true,
+          unreadMessages: 0,
+        },
+        where: {
+          id: data,
+        },
+      });
+      await this.prisma.userMessages.deleteMany({
+        where: {
+          userId: data,
+        },
+      });
+    }
     //  //e.log('User ' + data + ' is online');
     // update user status in data store
   }

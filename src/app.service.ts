@@ -37,7 +37,7 @@ export class AppService {
       skip: +query.skip || 0,
       take: +query.take || 15,
       where: {
-        type: messageType.MEDIA,
+        type: messageType.PNG || messageType.JPG || messageType.MP4,
       },
       select: {
         messageBody: true,

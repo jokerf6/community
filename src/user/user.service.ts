@@ -8,6 +8,58 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async pending(res) {
+    const users = await this.prisma.user.findMany({
+      where: {
+        role: 'PENDING',
+      },
+    });
+    return ResponseController.success(
+      res,
+      'Get all Pending Users Successfully',
+      users,
+    );
+  }
+  async acceptAll(res) {
+    await this.prisma.user.updateMany({
+      where: {
+        role: 'PENDING',
+      },
+      data: {
+        role: 'USER',
+      },
+    });
+    return ResponseController.success(res, 'Update Data Successfully');
+  }
+  async removeAll(res) {
+    await this.prisma.user.deleteMany({
+      where: {
+        role: 'PENDING',
+      },
+    });
+    return ResponseController.success(res, 'Delete Data Successfully');
+  }
+  async remove(res, id) {
+    await this.prisma.user.delete({
+      where: {
+        id,
+      },
+    });
+    return ResponseController.success(res, 'Delete Data Successfully');
+  }
+
+  async accept(res, id) {
+    await this.prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        role: 'USER',
+      },
+    });
+    return ResponseController.success(res, 'Delete Data Successfully');
+  }
+
   async addUser(res, addUser) {
     const { number, extendDate } = addUser;
 

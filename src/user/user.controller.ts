@@ -10,6 +10,7 @@ import {
   UseGuards,
   Patch,
   ValidationPipe,
+  Delete,
 } from '@nestjs/common';
 
 import { Response } from 'express';
@@ -58,6 +59,45 @@ export class UserController {
   ) {
     return this.userService.all(res, query);
   }
+
+  @ApiBearerAuth('Access Token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  @Get('/pending')
+  pending(@Res() res: Response) {
+    return this.userService.pending(res);
+  }
+  @ApiBearerAuth('Access Token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  @Patch('/acceptAll')
+  acceptAll(@Res() res: Response) {
+    return this.userService.acceptAll(res);
+  }
+
+  @ApiBearerAuth('Access Token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  @Delete('/removeAll')
+  removeAll(@Res() res: Response) {
+    return this.userService.removeAll(res);
+  }
+  @ApiBearerAuth('Access Token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  @Delete('/:id/remove')
+  userRemove(@Res() res: Response, @Param('id') id: string) {
+    return this.userService.remove(res, id);
+  }
+
+  @ApiBearerAuth('Access Token')
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
+  @Patch('/:id/accept')
+  useraccept(@Res() res: Response, @Param('id') id: string) {
+    return this.userService.accept(res, id);
+  }
+
   @ApiBearerAuth('Access Token')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
