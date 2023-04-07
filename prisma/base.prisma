@@ -84,6 +84,7 @@ enum messageType {
     MEDIA
     PNG
     JPG
+    JPEG
     MP4
     DELETED
 }
