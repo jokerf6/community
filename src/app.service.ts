@@ -37,7 +37,20 @@ export class AppService {
       skip: +query.skip || 0,
       take: +query.take || 15,
       where: {
-        type: messageType.PNG || messageType.JPG || messageType.MP4,
+        OR: [
+          {
+            type: messageType.PNG,
+          },
+          {
+            type: messageType.JPEG,
+          },
+          {
+            type: messageType.JPG,
+          },
+          {
+            type: messageType.MP4,
+          },
+        ],
       },
       select: {
         messageBody: true,
@@ -46,7 +59,20 @@ export class AppService {
     });
     const allMedia = await this.prisma.messages.count({
       where: {
-        type: messageType.MEDIA,
+        OR: [
+          {
+            type: messageType.PNG,
+          },
+          {
+            type: messageType.JPEG,
+          },
+          {
+            type: messageType.JPG,
+          },
+          {
+            type: messageType.MP4,
+          },
+        ],
       },
     });
     return ResponseController.success(res, 'Get users Successfully', {
