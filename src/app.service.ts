@@ -85,7 +85,7 @@ export class AppService {
     console.log(__dirname);
     const filePath = join(
       __dirname,
-      '..',
+      
       `/uploads/${id.split('uploads/')[0]}`,
     );
 
@@ -120,7 +120,6 @@ export class AppService {
     console.log(__dirname);
     const filePath = join(
       __dirname,
-      '..',
       `/uploads/${id.split('uploads/')[0]}`,
     );
 

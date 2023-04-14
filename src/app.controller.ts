@@ -63,12 +63,12 @@ export class AppController {
   ) {
     return this.appService.getMedia(res, query);
   }
-  @Get('/api/v1/uploads/:id')
+  @Get('/api/v1/uploads/uploads/:id')
   sendFile(@Res() res, @Param('id') id: string) {
     console.log(id);
     return this.appService.sendFile(res, id);
   }
-  @Get('/api/v1/downloads/uploads/:id')
+  @Get('/api/v1/downloads/uploads/uploads/:id')
   downloadFile(@Res() res, @Param('id') id: string) {
     return this.appService.downloadFile(res, id);
   }
